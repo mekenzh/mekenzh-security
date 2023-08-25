@@ -1,14 +1,21 @@
-package org.mekenzh.security.entities
+package org.mekenzh.security.webapp.entity
 
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USERS")
 data class UserEntity(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Long?,
     val login: String,
     @Column(name = "ENC_PASSWORD") val encPassword: ByteArray,
-    val salt: ByteArray
+    val salt: ByteArray,
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "USER_GROUPS",
+        joinColumns = [JoinColumn(name = "USER_ID")],
+        inverseJoinColumns = [JoinColumn(name = "GROUP_ID")]
+    )
+    val groupEntities: Set<GroupEntity>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
